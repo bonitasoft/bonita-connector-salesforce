@@ -12,9 +12,9 @@ timestamps {
                     }else{
                        sh './mvnw -B clean verify'
                     }
-                    archiveArtifacts 'target/bonita-connector-uipath-*.zip'
+                    archiveArtifacts 'target/bonita-connector-salesforce-*.zip'
                 } finally {
-                    junit '**/target/surefire-reports/*.xml'
+                    junit allowEmptyResults: true, testResults: '**/target/*-reports/*.xml'
                 }
             }
         }
