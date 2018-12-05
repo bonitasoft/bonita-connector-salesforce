@@ -1,5 +1,7 @@
 <?xml version="1.0"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<artifactId>bonita-connectors</artifactId>
@@ -8,70 +10,145 @@
 	</parent>
 
 	<artifactId>bonita-connector-salesforce</artifactId>
-	<packaging>pom</packaging>
-	
-	<name>bonita-connector-salesforce</name>
-	
-	<modules>
-		<module>bonita-connector-salesforce-common</module>
-		<module>bonita-connector-salesforce-createsobject-def</module>
-        <module>bonita-connector-salesforce-createsobject-impl</module>
-        <module>bonita-connector-salesforce-deletesobjects-def</module>
-		<module>bonita-connector-salesforce-deletesobjects-impl</module>
-		<module>bonita-connector-salesforce-retrievesobjects-def</module>
-		<module>bonita-connector-salesforce-retrievesobjects-impl</module>
-		<module>bonita-connector-salesforce-querysobjects-def</module>
-		<module>bonita-connector-salesforce-querysobjects-impl</module>
-		<module>bonita-connector-salesforce-updatesobject-def</module>
-		<module>bonita-connector-salesforce-updatesobject-impl</module>
-	</modules>
-	
+	<version>1.1.0-SNAPSHOT</version>
+
+	<name>Bonita Salesforce Connector</name>
+
 	<properties>
-		<bonita.engine.version>6.2.0</bonita.engine.version>
-		<salesforce.common.version>1.0.0</salesforce.common.version>
+		<bonita.engine.version>7.7.0</bonita.engine.version>
 	</properties>
-   
+
 	<dependencies>
 		<dependency>
-			<!-- Latest Version of Bonita released, against which the initial development 
-				has been done. -->
-			<!-- The connector will be tested against more recent version -->
 			<artifactId>bonita-common</artifactId>
 			<groupId>org.bonitasoft.engine</groupId>
 			<version>${bonita.engine.version}</version>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>com.force.api</groupId>
+			<artifactId>force-wsc</artifactId>
+			<version>24.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.force.api</groupId>
+			<artifactId>force-partner-api</artifactId>
+			<version>24.0.0</version>
+		</dependency>
 	</dependencies>
-	
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>com.force.api</groupId>
-				<artifactId>force-wsc</artifactId>
-				<version>24.0.0</version>
-			</dependency>
-			<dependency>
-				<groupId>com.force.api</groupId>
-				<artifactId>force-partner-api</artifactId>
-				<version>24.0.0</version>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
 
-    <build>
+
+	<build>
+		<pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-release-plugin</artifactId>
+                    <version>2.5.3</version>
+                    <configuration>
+                        <tagNameFormat>@{project.version}</tagNameFormat>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-assembly-plugin</artifactId>
+                    <version>2.5</version>
+                    <executions>
+                        <execution>
+                            <id>assemble</id>
+                            <phase>none</phase>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-release-plugin</artifactId>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.0</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>all</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <configuration>
+                            <descriptor>${basedir}/connector-assembly.xml</descriptor>
+                            <appendAssemblyId>true</appendAssemblyId>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>create-object</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <configuration>
+                            <descriptor>${basedir}/create-object-assembly.xml</descriptor>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>delete-objects</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <configuration>
+                            <descriptor>${basedir}/delete-objects-assembly.xml</descriptor>
+                        </configuration>
+                    </execution>
+                     <execution>
+                        <id>query-objects-job</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <configuration>
+                            <descriptor>${basedir}/query-objects-assembly.xml</descriptor>
+                        </configuration>
+                    </execution>
+                     <execution>
+                        <id>retrieve-objects-job</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <configuration>
+                            <descriptor>${basedir}/retrieve-objects-assembly.xml</descriptor>
+                        </configuration>
+                    </execution>
+                      <execution>
+                        <id>update-object-job</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <configuration>
+                            <descriptor>${basedir}/update-object-assembly.xml</descriptor>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
-    </build>
-
-    <scm>
-        <developerConnection>scm:git:git@github.com:bonitasoft/bonita-connector-salesforce.git</developerConnection>
-        <connection>scm:git:git@github.com:bonitasoft/bonita-connector-salesforce.git</connection>
-        <url>https://github.com/bonitasoft/bonita-connector-salesforce</url>
-        <tag>HEAD</tag>
+	</build>
+	
+	 <scm>
+        <developerConnection>scm:git:https//${env.GIT_USERNAME}:${env.GIT_PASSWORD}@github.com/bonitasoft/bonita-connector-salesforce.git</developerConnection>
+        <connection>scm:git:https//${env.GIT_USERNAME}:${env.GIT_PASSWORD}@github.com/bonitasoft/bonita-connector-salesforce.git</connection>
+        <url>https://github.com/bonitasoft/bonita-connector-salesforce.git</url>
     </scm>
 
 </project>
