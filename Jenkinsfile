@@ -1,22 +1,21 @@
-#!/usr/bin/env groovy
-
 timestamps {
     ansiColor('xterm') {
         node {
             stage('Setup') {
-                 checkout scm
+                checkout scm
             }
 
             stage('Build') {
                 try {
-                    sh "./mvnw verify"
+                    if(env.BRANCH_NAME.equals('master')){
+                      sh "./mvnw -B clean deploy -DaltDeploymentRepository=${env.ALT_DEPLOYMENT_REPOSITORY_SNAPSHOTS}"  
+                    }else{
+                       sh './mvnw -B clean verify'
+                    }
+                    archiveArtifacts 'target/bonita-connector-uipath-*.zip'
                 } finally {
-                    junit allowEmptyResults: true, testResults: '**/target/*-reports/*.xml'
+                    junit '**/target/surefire-reports/*.xml'
                 }
-            }
-
-            stage('Archive') {
-                archiveArtifacts '**/target/*.zip'
             }
         }
     }
