@@ -12,7 +12,7 @@
             <outputDirectory>/</outputDirectory>
             <directory>target/classes</directory>
             <includes>
-                <include>salesforce-queryobjects.impl</include>
+                <include>salesforce-querysobjects.impl</include>
                 <include>/classpath</include>
             </includes>
         </fileSet>
