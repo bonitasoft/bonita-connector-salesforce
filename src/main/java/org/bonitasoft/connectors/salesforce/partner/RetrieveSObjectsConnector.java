@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.List;
 
 import com.sforce.soap.partner.PartnerConnection;
+import com.sforce.ws.ConnectionException;
 
 /**
  * @author Charles Souillard, Haris Subasic
@@ -39,7 +40,7 @@ public class RetrieveSObjectsConnector extends SalesforceConnector {
     private static final String S_OBJECT_IDS = "sObjectIds";
 
     // output parameters
-    protected String S_OBJECTS = "sObjects";
+    private static final String S_OBJECTS_OUTPUT = "sObjects";
 
     @Override
     protected List<String> validateExtraValues() {
@@ -65,13 +66,13 @@ public class RetrieveSObjectsConnector extends SalesforceConnector {
 
     @SuppressWarnings("unchecked")
     @Override
-    protected final void executeFunction(final PartnerConnection connection) throws Exception {
+    protected final void executeFunction(final PartnerConnection connection) throws ConnectionException {
         final String fieldsToRetrieve = SalesforceTool.buildFields((Collection<String>) getInputParameter(FIELDS_TO_RETRIEVE,
                 (Serializable) Collections.emptyList()));
         final String sObjectType = (String) getInputParameter(S_OBJECT_TYPE);
         final List<String> sObjectIds = (List<String>) getInputParameter(S_OBJECT_IDS);
         final String[] ids = sObjectIds.toArray(new String[sObjectIds.size()]);
-        setOutputParameter(S_OBJECTS, Arrays.asList(connection.retrieve(fieldsToRetrieve, sObjectType, ids)));
+        setOutputParameter(S_OBJECTS_OUTPUT, Arrays.asList(connection.retrieve(fieldsToRetrieve, sObjectType, ids)));
     }
 
     public RetrieveSObjectsConnector() {

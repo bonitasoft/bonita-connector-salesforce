@@ -71,7 +71,7 @@ public abstract class SalesforceConnector extends AbstractConnector {
 
     private PartnerConnection connection;
 
-    protected abstract void executeFunction(final PartnerConnection connection) throws Exception;
+    protected abstract void executeFunction(final PartnerConnection connection) throws ConnectionException;
 
     protected abstract List<String> validateExtraValues();
 
@@ -87,21 +87,26 @@ public abstract class SalesforceConnector extends AbstractConnector {
     
     @Override
     public void disconnect() throws ConnectorException {
-        if(connection != null ) {
-            try {
-                connection.logout();
-            } catch (ConnectionException e) {
-                LOGGER.warning("An error occurred while disconnecting from Salesforce: "+ e.toString());
-            }
-        }
+        connection = null;
     }
     
     @Override
     protected void executeBusinessLogic() throws ConnectorException {
         try {
-            this.executeFunction(connection);
-        } catch (final Exception e) {
-            throw new ConnectorException(e);
+            executeFunction(connection);
+        } catch (final ConnectionException e) {
+           //try to reconnect and retry
+            try {
+                connection.logout();
+            } catch (ConnectionException e2) {
+                //ignore logout exception
+            }
+            connect();
+            try {
+                executeFunction(connection);
+            } catch (ConnectionException e1) {
+                throw new ConnectorException("Failed to connect to Salesforce", e1);
+            }
         }
     }
 

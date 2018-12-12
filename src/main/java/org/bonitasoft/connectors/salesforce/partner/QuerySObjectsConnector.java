@@ -18,11 +18,13 @@ package org.bonitasoft.connectors.salesforce.partner;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import com.sforce.soap.partner.PartnerConnection;
 import com.sforce.soap.partner.QueryResult;
 import com.sforce.soap.partner.sobject.SObject;
+import com.sforce.ws.ConnectionException;
 
 /**
  * @author Charles Souillard, Haris Subasic
@@ -50,12 +52,10 @@ public class QuerySObjectsConnector extends SalesforceConnector {
     }
 
     @Override
-    protected void executeFunction(final PartnerConnection connection)
-            throws Exception {
+    protected void executeFunction(final PartnerConnection connection) throws ConnectionException {
         final String query = String.valueOf(getInputParameter(QUERY));
-        final QueryResult queryResult = connection.query(query);
+        QueryResult queryResult = connection.query(query);
         setOutputParameter(QUERY_RESULT, queryResult);
-        final List<SObject> sObjects = Arrays.asList(queryResult.getRecords());
-        setOutputParameter(S_OBJECTS, sObjects);
+        setOutputParameter(S_OBJECTS,queryResult != null ? Arrays.asList(queryResult.getRecords()) : Collections.emptyList());
     }
 }

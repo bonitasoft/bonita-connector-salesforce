@@ -24,6 +24,7 @@ import java.util.List;
 import com.sforce.soap.partner.PartnerConnection;
 import com.sforce.soap.partner.SaveResult;
 import com.sforce.soap.partner.sobject.SObject;
+import com.sforce.ws.ConnectionException;
 
 /**
  * @author Charles Souillard, Haris Subasic
@@ -70,11 +71,10 @@ public class UpdateSObjectConnector extends SalesforceConnector {
 
     @Override
     protected void executeFunction(final PartnerConnection connection)
-            throws Exception {
+            throws ConnectionException {
         final SObject sObject = new SObject();
         sObject.setType((String) getInputParameter(S_OBJECT_TYPE));
         sObject.setId((String) getInputParameter(S_OBJECT_ID));
-        @SuppressWarnings("unchecked")
         final List<List<Object>> parametersList = (List<List<Object>>) getInputParameter(FIELD_VALUES);
         if (parametersList != null) {
             for (final List<Object> rows : parametersList) {

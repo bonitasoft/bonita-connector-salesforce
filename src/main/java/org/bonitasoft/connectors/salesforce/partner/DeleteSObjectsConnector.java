@@ -22,6 +22,7 @@ import java.util.List;
 
 import com.sforce.soap.partner.DeleteResult;
 import com.sforce.soap.partner.PartnerConnection;
+import com.sforce.ws.ConnectionException;
 
 public class DeleteSObjectsConnector extends SalesforceConnector {
 
@@ -53,8 +54,7 @@ public class DeleteSObjectsConnector extends SalesforceConnector {
     }
 
     @Override
-    protected final void executeFunction(final PartnerConnection connection) throws Exception {
-        @SuppressWarnings("unchecked")
+    protected final void executeFunction(final PartnerConnection connection) throws ConnectionException {
         final List<String> sObjectIds = (List<String>) getInputParameter(S_OBJECT_IDS);
         String[] ids = sObjectIds.toArray(new String[sObjectIds.size()]);
         List<DeleteResult> deleteResults = Arrays.asList(connection.delete(ids));

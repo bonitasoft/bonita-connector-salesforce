@@ -23,6 +23,7 @@ import java.util.List;
 import com.sforce.soap.partner.PartnerConnection;
 import com.sforce.soap.partner.SaveResult;
 import com.sforce.soap.partner.sobject.SObject;
+import com.sforce.ws.ConnectionException;
 
 /**
  * @author Charles Souillard, Haris Subasic
@@ -42,7 +43,7 @@ public class CreateSObjectConnector extends SalesforceConnector {
 
     @Override
     protected final void executeFunction(final PartnerConnection connection)
-            throws Exception {
+            throws ConnectionException {
         final SObject sObject = new SObject();
         sObject.setType((String) getInputParameter(S_OBJECT_TYPE));
         @SuppressWarnings("unchecked")
