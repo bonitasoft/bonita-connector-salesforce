@@ -7,7 +7,7 @@
 	</parent>
 
 	<artifactId>bonita-connector-salesforce</artifactId>
-	<version>1.1.2</version>
+	<version>1.1.3-SNAPSHOT</version>
 
 	<name>Bonita Salesforce Connector</name>
 
@@ -157,7 +157,7 @@
 		<developerConnection>scm:git:https://${env.GIT_USERNAME}:${env.GIT_PASSWORD}@github.com/bonitasoft/bonita-connector-salesforce.git</developerConnection>
 		<connection>scm:git:https://${env.GIT_USERNAME}:${env.GIT_PASSWORD}@github.com/bonitasoft/bonita-connector-salesforce.git</connection>
 		<url>https://github.com/bonitasoft/bonita-connector-salesforce</url>
-		<tag>1.1.2</tag>
+		<tag>HEAD</tag>
 	</scm>
 
 </project>
