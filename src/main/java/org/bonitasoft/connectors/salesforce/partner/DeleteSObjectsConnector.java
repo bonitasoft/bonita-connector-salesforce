@@ -1,6 +1,6 @@
-/**
- * Copyright (C) 2013 BonitaSoft S.A.
- * BonitaSoft, 32 rue Gustave Eiffel - 38000 Grenoble
+/*
+ * Copyright (C) 2009 - 2020 Bonitasoft S.A.
+ * Bonitasoft, 32 rue Gustave Eiffel - 38000 Grenoble
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 2.0 of the License, or
@@ -13,6 +13,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ *
  */
 package org.bonitasoft.connectors.salesforce.partner;
 
@@ -32,15 +33,12 @@ public class DeleteSObjectsConnector extends SalesforceConnector {
 	// output parameters
 	protected DeleteResult deleteResults;
 
-    public DeleteSObjectsConnector() {
-    }
-
     @Override
     protected List<String> validateExtraValues() {
-        final List<String> errors = new ArrayList<String>(1);
+        final List<String> errors = new ArrayList<>();
         @SuppressWarnings("unchecked")
         final List<String> sObjectIds = (List<String>) getInputParameter(S_OBJECT_IDS);
-        if (sObjectIds == null || sObjectIds.size() == 0) {
+        if (sObjectIds == null || sObjectIds.isEmpty()) {
             errors.add("sObjectIds cannot be null or empty");
             return errors;
         }
@@ -53,12 +51,12 @@ public class DeleteSObjectsConnector extends SalesforceConnector {
         return errors;
     }
 
+    @SuppressWarnings({ "unchecked"})
     @Override
     protected final void executeFunction(final PartnerConnection connection) throws ConnectionException {
         final List<String> sObjectIds = (List<String>) getInputParameter(S_OBJECT_IDS);
         String[] ids = sObjectIds.toArray(new String[sObjectIds.size()]);
-        List<DeleteResult> deleteResults = Arrays.asList(connection.delete(ids));
-        setOutputParameter("deleteResults", deleteResults);
+        setOutputParameter("deleteResults", Arrays.asList(connection.delete(ids)));
     }
 
 }
