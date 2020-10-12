@@ -1,18 +1,19 @@
-/**
- * Copyright (C) 2011 BonitaSoft S.A.
- * BonitaSoft, 31 rue Gustave Eiffel - 38000 Grenoble
+/*
+ * Copyright (C) 2009 - 2020 Bonitasoft S.A.
+ * Bonitasoft, 32 rue Gustave Eiffel - 38000 Grenoble
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 2.0 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ *
  */
 package org.bonitasoft.connectors.salesforce.partner;
 
@@ -44,14 +45,14 @@ public class RetrieveSObjectsConnector extends SalesforceConnector {
 
     @Override
     protected List<String> validateExtraValues() {
-        final List<String> errors = new ArrayList<String>(1);
+        final List<String> errors = new ArrayList<>();
         @SuppressWarnings("unchecked")
         final List<String> sObjectIds = (List<String>) getInputParameter(S_OBJECT_IDS);
         final String objType = (String) getInputParameter(S_OBJECT_TYPE);
         if (objType == null || objType.length() == 0) {
             errors.add("objectType cannot be null or empty");
         }
-        if (sObjectIds == null || sObjectIds.size() == 0) {
+        if (sObjectIds == null || sObjectIds.isEmpty()) {
             errors.add("sObjectIds cannot be null or empty");
             return errors;
         }
@@ -75,6 +76,4 @@ public class RetrieveSObjectsConnector extends SalesforceConnector {
         setOutputParameter(S_OBJECTS_OUTPUT, Arrays.asList(connection.retrieve(fieldsToRetrieve, sObjectType, ids)));
     }
 
-    public RetrieveSObjectsConnector() {
-    }
 }

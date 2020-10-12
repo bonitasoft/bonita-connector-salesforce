@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<implementation:connectorImplementation xmlns:implementation="http://www.bonitasoft.org/ns/connector/implementation/6.0">
+
+	<definitionId>${salesforce-updatesobject.def.id}</definitionId>
+	<definitionVersion>${salesforce-updatesobject.def.version}</definitionVersion>
+	<description>Implementation based on com.force.api.force-wsc 24.0.0 and com.force.api-force-partner-api 24.0.0</description>
+	<implementationClassname>${salesforce-updatesobject.main-class}</implementationClassname>
+	<implementationId>${salesforce-updatesobject.impl.id}</implementationId>
+	<implementationVersion>${salesforce-updatesobject.impl.version}</implementationVersion>
+
+${connector-dependencies}
+
+</implementation:connectorImplementation>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<implementation:connectorImplementation xmlns:implementation="http://www.bonitasoft.org/ns/connector/implementation/6.0">
+
+	<definitionId>${salesforce-retrievesobjects.def.id}</definitionId>
+	<definitionVersion>${salesforce-retrievesobjects.def.version}</definitionVersion>
+	<description>Implementation based on com.force.api.force-wsc 24.0.0 and com.force.api-force-partner-api 24.0.0</description>
+	<implementationClassname>${salesforce-retrievesobjects.main-class}</implementationClassname>
+	<implementationId>${salesforce-retrievesobjects.impl.id}</implementationId>
+	<implementationVersion>${salesforce-retrievesobjects.impl.version}</implementationVersion>
+
+${connector-dependencies}
+
+</implementation:connectorImplementation>

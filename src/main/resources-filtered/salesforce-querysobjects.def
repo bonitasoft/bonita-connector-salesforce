@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <definition:ConnectorDefinition xmlns:definition="http://www.bonitasoft.org/ns/connector/definition/6.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-	<id>salesforce-retrievesobjects</id>
-	<version>1.0.1</version>
+	<id>${salesforce-querysobjects.def.id}</id>
+	<version>${salesforce-querysobjects.def.version}</version>
 	<icon>salesforce.png</icon>
 
 	<category id="Salesforce" icon="salesforce.png" parentCategoryId="crm"/>
@@ -18,11 +18,10 @@
 	<input name="proxyPassword" type="java.lang.String" />
 	<input name="connectionTimeout" type="java.lang.Integer" defaultValue="0" />
 	<input name="readTimeout" type="java.lang.Integer" defaultValue="0" />
-	<input name="sObjectType" type="java.lang.String" mandatory="true" />
-	<input name="sObjectIds" type="java.util.List" mandatory="true" />
-	<input name="fieldsToRetrieve" type="java.util.List" />
+	<input name="query" type="java.lang.String" mandatory="true" />
 
 	<output name="sObjects" type="java.util.List" />
+	<output name="queryResults" type="com.sforce.soap.partner.QueryResult" />
 
 	<page id="ConnectionInformation">
 		<widget id="username" inputName="username" xsi:type="definition:Text" />
@@ -45,9 +44,7 @@
 		</widget>
 	</page>
 	<page id="Parameters">
-		<widget id="sObjectType" inputName="sObjectType" xsi:type="definition:Text" />
-		<widget id="sObjectIds" inputName="sObjectIds" xsi:type="definition:List" />
-		<widget id="fieldsToRetrieve" inputName="fieldsToRetrieve" xsi:type="definition:List" />
+		<widget id="query" inputName="query" xsi:type="definition:TextArea" />
 	</page>
 
     <jarDependency>force-partner-api-24.0.0.jar</jarDependency>

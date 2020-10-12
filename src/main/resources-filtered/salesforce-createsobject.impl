@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<implementation:connectorImplementation xmlns:implementation="http://www.bonitasoft.org/ns/connector/implementation/6.0">
+
+	<definitionId>${salesforce-createsobject.def.id}</definitionId>
+	<definitionVersion>${salesforce-createsobject.def.version}</definitionVersion>
+	<description>Implementation based on com.force.api.force-wsc 24.0.0 and com.force.api-force-partner-api 24.0.0</description>
+	<implementationClassname>${salesforce-createsobject.main-class}</implementationClassname>
+	<implementationId>${salesforce-createsobject.impl.id}</implementationId>
+	<implementationVersion>${salesforce-createsobject.impl.version}</implementationVersion>
+
+${connector-dependencies}
+
+</implementation:connectorImplementation>

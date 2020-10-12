@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <definition:ConnectorDefinition xmlns:definition="http://www.bonitasoft.org/ns/connector/definition/6.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-	<id>salesforce-updatesobject</id>
-	<version>1.0.1</version>
+	<id>${salesforce-updatesobject.def.id}</id>
+	<version>${salesforce-updatesobject.def.version}</version>
 	<icon>salesforce.png</icon>
 
 	<category id="Salesforce" icon="salesforce.png" parentCategoryId="crm"/>

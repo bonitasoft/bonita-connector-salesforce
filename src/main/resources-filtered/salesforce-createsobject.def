@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <definition:ConnectorDefinition xmlns:definition="http://www.bonitasoft.org/ns/connector/definition/6.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-	<id>salesforce-deletesobjects</id>
-	<version>1.0.1</version>
+	<id>${salesforce-createsobject.def.id}</id>
+	<version>${salesforce-createsobject.def.version}</version>
 	<icon>salesforce.png</icon>
 
+	<category id="crm" icon="CRM.png" />
 	<category id="Salesforce" icon="salesforce.png" parentCategoryId="crm"/>
 
 	<input name="username" type="java.lang.String" mandatory="true" />
@@ -18,9 +19,11 @@
 	<input name="proxyPassword" type="java.lang.String" />
 	<input name="connectionTimeout" type="java.lang.Integer" defaultValue="0" />
 	<input name="readTimeout" type="java.lang.Integer" defaultValue="0" />
-	<input name="sObjectIds" type="java.util.List" mandatory="true" />
+	<input name="sObjectType" type="java.lang.String" mandatory="true" />
+	<input name="fieldValues" type="java.util.List"/>
 
-	<output name="deleteResults" type="java.util.List" />
+	<output name="sObjectId" type="java.lang.String" />
+	<output name="saveResult" type="com.sforce.soap.partner.SaveResult" />
 
 	<page id="ConnectionInformation">
 		<widget id="username" inputName="username" xsi:type="definition:Text" />
@@ -43,10 +46,15 @@
 		</widget>
 	</page>
 	<page id="Parameters">
-		<widget id="sObjectIds" inputName="sObjectIds" xsi:type="definition:List" />
+		<widget id="sObjectType" inputName="sObjectType" xsi:type="definition:Text" />
+		<widget id="fieldValues" inputName="fieldValues" cols="2" rows="1" fixedCols="true" fixedRows="false" xsi:type="definition:Array" >
+			<colsCaption>Field Name</colsCaption>
+			<colsCaption>Field Value</colsCaption>
+		</widget>
 	</page>
 
     <jarDependency>force-partner-api-24.0.0.jar</jarDependency>
   	<jarDependency>force-wsc-24.0.0.jar</jarDependency>
 
 </definition:ConnectorDefinition>
+	
