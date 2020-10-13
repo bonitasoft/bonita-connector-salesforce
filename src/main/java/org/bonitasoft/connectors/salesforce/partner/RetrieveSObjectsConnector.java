@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.sforce.soap.partner.PartnerConnection;
 import com.sforce.ws.ConnectionException;
@@ -34,14 +35,13 @@ import com.sforce.ws.ConnectionException;
 public class RetrieveSObjectsConnector extends SalesforceConnector {
 
     // input parameters
-    private static final String FIELDS_TO_RETRIEVE = "fieldsToRetrieve";
+    static final String FIELDS_TO_RETRIEVE = "fieldsToRetrieve";
 
-    private static final String S_OBJECT_TYPE = "sObjectType";
-
-    private static final String S_OBJECT_IDS = "sObjectIds";
+    static final String S_OBJECT_TYPE = "sObjectType";
+    static final String S_OBJECT_IDS = "sObjectIds";
 
     // output parameters
-    private static final String S_OBJECTS_OUTPUT = "sObjects";
+    static final String S_OBJECTS_OUTPUT = "sObjects";
 
     @Override
     protected List<String> validateExtraValues() {
@@ -54,13 +54,8 @@ public class RetrieveSObjectsConnector extends SalesforceConnector {
         }
         if (sObjectIds == null || sObjectIds.isEmpty()) {
             errors.add("sObjectIds cannot be null or empty");
-            return errors;
-        }
-        for (String id : sObjectIds) {
-            if (id == null || id.length() == 0) {
-                errors.add("An id of sObject to retrieve is null or empty");
-                return errors;
-            }
+        } else if (sObjectIds.stream().anyMatch(id -> id == null || id.isEmpty())) {
+            errors.add("An id of sObject to delete is null or empty");
         }
         return errors;
     }
@@ -68,12 +63,14 @@ public class RetrieveSObjectsConnector extends SalesforceConnector {
     @SuppressWarnings("unchecked")
     @Override
     protected final void executeFunction(final PartnerConnection connection) throws ConnectionException {
-        final String fieldsToRetrieve = SalesforceTool.buildFields((Collection<String>) getInputParameter(FIELDS_TO_RETRIEVE,
-                (Serializable) Collections.emptyList()));
+        final String fieldsToRetrieve = ((Collection<String>) getInputParameter(FIELDS_TO_RETRIEVE,
+                (Serializable) Collections.emptyList())).stream().collect(Collectors.joining(","));
         final String sObjectType = (String) getInputParameter(S_OBJECT_TYPE);
         final List<String> sObjectIds = (List<String>) getInputParameter(S_OBJECT_IDS);
         final String[] ids = sObjectIds.toArray(new String[sObjectIds.size()]);
         setOutputParameter(S_OBJECTS_OUTPUT, Arrays.asList(connection.retrieve(fieldsToRetrieve, sObjectType, ids)));
     }
+    
+
 
 }

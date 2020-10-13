@@ -28,19 +28,12 @@ import com.sforce.ws.ConnectionException;
 
 /**
  * @author Charles Souillard, Haris Subasic
- * 
  */
 public class CreateSObjectConnector extends SalesforceConnector {
 
     // input parameters
-    private static final String S_OBJECT_TYPE = "sObjectType";
-
-    private static final String FIELD_VALUES = "fieldValues";
-
-    // output parameters
-    protected String sObjectId;
-
-    protected SaveResult saveResult;
+    static final String S_OBJECT_TYPE = "sObjectType";
+    static final String FIELD_VALUES = "fieldValues";
 
     @Override
     protected final void executeFunction(final PartnerConnection connection)
@@ -49,24 +42,23 @@ public class CreateSObjectConnector extends SalesforceConnector {
         sObject.setType((String) getInputParameter(S_OBJECT_TYPE));
         @SuppressWarnings("unchecked")
         final List<List<Object>> parametersList = (List<List<Object>>) getInputParameter(FIELD_VALUES);
-        if (parametersList != null) {
-            for (final List<Object> rows : parametersList) {
-                if (rows.size() == 2) {
-                    final Object keyContent = rows.get(0);
-                    final Object valueContent = rows.get(1);
-                    if (keyContent != null && valueContent != null) {
-                        sObject.setField(keyContent.toString(), valueContent instanceof Serializable ? valueContent : valueContent.toString());
-                    }
-                }
-            }
+        for (final List<Object> rows : parametersList) {
+            addSObjectField(sObject, rows);
         }
 
-        final SObject[] sObjects = new SObject[] { sObject };
-
-        final SaveResult[] sResults = connection.create(sObjects);
+        final SaveResult[] sResults = connection.create(new SObject[] { sObject });
         if (sResults != null && sResults.length > 0) {
-            setOutputParameter("sObjectId", sResults[0].getId());
-            setOutputParameter("saveResult", sResults[0]);
+            setOutputParameter(S_OBJECT_ID_OUTPUT, sResults[0].getId());
+            setOutputParameter(SAVE_RESULT_OUTPUT, sResults[0]);
+        }
+    }
+
+    private void addSObjectField(final SObject sObject, final List<Object> rows) {
+        final Object keyContent = rows.get(0);
+        final Object valueContent = rows.get(1);
+        if (keyContent != null && valueContent != null) {
+            sObject.setField(keyContent.toString(),
+                    valueContent instanceof Serializable ? valueContent : valueContent.toString());
         }
     }
 
@@ -74,15 +66,21 @@ public class CreateSObjectConnector extends SalesforceConnector {
     protected List<String> validateExtraValues() {
         final List<String> errors = new ArrayList<>();
         final String objType = ((String) getInputParameter(S_OBJECT_TYPE));
-        if (objType == null || objType.length() == 0) {
+        if (objType == null || objType.isEmpty()) {
             errors.add("objectType cannot be null or empty");
         }
         @SuppressWarnings("unchecked")
         final List<List<String>> fieldValues = (List<List<String>>) getInputParameter(FIELD_VALUES);
         if (fieldValues == null || fieldValues.isEmpty()) {
             errors.add("fieldValues cannot be null or empty");
+        } else {
+            fieldValues.stream()
+                    .filter(row -> row.size() != 2)
+                    .findFirst()
+                    .ifPresent(row -> errors
+                            .add(String.format("fieldValue at index %s contains %s entries instead of 2.",
+                                    fieldValues.indexOf(row), row.size())));
         }
-
         return errors;
     }
 

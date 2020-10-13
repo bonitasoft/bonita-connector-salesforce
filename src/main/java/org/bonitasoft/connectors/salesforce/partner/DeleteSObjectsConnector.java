@@ -21,17 +21,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import com.sforce.soap.partner.DeleteResult;
 import com.sforce.soap.partner.PartnerConnection;
 import com.sforce.ws.ConnectionException;
 
 public class DeleteSObjectsConnector extends SalesforceConnector {
 
-	// input parameters
-	private static final String S_OBJECT_IDS = "sObjectIds";
-
-	// output parameters
-	protected DeleteResult deleteResults;
+    // input parameters
+    static final String S_OBJECT_IDS = "sObjectIds";
+    //output parameter
+    static final String DELETE_RESULTS_OUTPUT = "deleteResults";
 
     @Override
     protected List<String> validateExtraValues() {
@@ -40,23 +38,18 @@ public class DeleteSObjectsConnector extends SalesforceConnector {
         final List<String> sObjectIds = (List<String>) getInputParameter(S_OBJECT_IDS);
         if (sObjectIds == null || sObjectIds.isEmpty()) {
             errors.add("sObjectIds cannot be null or empty");
-            return errors;
-        }
-        for (String id : sObjectIds) {
-			if (id == null || id.length() == 0){
-                errors.add("An id of sObject to delete is null or empty");
-                return errors;
-            }
+        }else if (sObjectIds.stream().anyMatch(id -> id == null || id.isEmpty())) {
+            errors.add("An id of sObject to delete is null or empty");
         }
         return errors;
     }
 
-    @SuppressWarnings({ "unchecked"})
+    @SuppressWarnings({ "unchecked" })
     @Override
     protected final void executeFunction(final PartnerConnection connection) throws ConnectionException {
         final List<String> sObjectIds = (List<String>) getInputParameter(S_OBJECT_IDS);
         String[] ids = sObjectIds.toArray(new String[sObjectIds.size()]);
-        setOutputParameter("deleteResults", Arrays.asList(connection.delete(ids)));
+        setOutputParameter(DELETE_RESULTS_OUTPUT, Arrays.asList(connection.delete(ids)));
     }
 
 }

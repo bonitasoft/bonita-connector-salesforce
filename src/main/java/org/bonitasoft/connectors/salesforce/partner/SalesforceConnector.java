@@ -45,32 +45,22 @@ public abstract class SalesforceConnector extends AbstractConnector {
     // http://www.salesforce.com/us/developer/docs/api/Content/sforce_api_quickstart_steps.htm
 
     private static final String ENDPOINT_VERSION = "24.0";
-
     private static final String ENDPOINT_VERSION_ERROR_MESSAGE = "Please ensure the API version is 24.0";
-
     public static final String USERNAME = "username";
-
     public static final String PASSWORD = "password";
-
     public static final String SECURITYTOKEN = "securityToken";
-
     public static final String AUTHENDPOINT = "authEndpoint";
-
     public static final String SERVICEENDPOINT = "serviceEndpoint";
-
     public static final String RESTENDPOINT = "restEndpoint";
-
     public static final String PROXYHOST = "proxyHost";
-
     public static final String PROXYPORT = "proxyPort";
-
     public static final String PROXYUSERNAME = "proxyUsername";
-
     public static final String PROXYPASSWORD = "proxyPassword";
-
     public static final String CONNECTIONTIMEOUT = "connectionTimeout";
-
     public static final String READTIMEOUT = "readTimeout";
+
+    static final String SAVE_RESULT_OUTPUT = "saveResult";
+    static final String S_OBJECT_ID_OUTPUT = "sObjectId";
 
     private PartnerConnection connection;
 
@@ -82,31 +72,41 @@ public abstract class SalesforceConnector extends AbstractConnector {
     public void connect() throws ConnectorException {
         final ConnectorConfig config = getConnectorConfiguration();
         try {
-            connection = com.sforce.soap.partner.Connector.newConnection(config);
-        }catch (ConnectionException e) {
+            connection = newConnection(config);
+        } catch (ConnectionException e) {
             throw new ConnectorException("Failed to login to Salesforce.", e);
         }
     }
-    
+
+    protected PartnerConnection newConnection(final ConnectorConfig config) throws ConnectionException {
+        return com.sforce.soap.partner.Connector.newConnection(config);
+    }
+
+    protected PartnerConnection getConnection() {
+        return connection;
+    }
+
     @Override
     public void disconnect() throws ConnectorException {
         connection = null;
     }
-    
+
     @Override
     protected void executeBusinessLogic() throws ConnectorException {
+        PartnerConnection activeConnection = getConnection();
         try {
-            executeFunction(connection);
+            executeFunction(activeConnection);
         } catch (final ConnectionException e) {
-           //try to reconnect and retry
+            //try to reconnect and retry
             try {
-                connection.logout();
+                activeConnection.logout();
             } catch (ConnectionException e2) {
                 //ignore logout exception
             }
             connect();
+            activeConnection = getConnection();
             try {
-                executeFunction(connection);
+                executeFunction(activeConnection);
             } catch (ConnectionException e1) {
                 throw new ConnectorException("Failed to connect to Salesforce", e1);
             }
@@ -134,19 +134,15 @@ public abstract class SalesforceConnector extends AbstractConnector {
         if (connectionTimeout != null && connectionTimeout < 0) {
                 errors.add("connectionTimeout cannot be less than 0!");
         }
-        if (connectionTimeout != null) {
-            final Integer readTimeout = ((Integer) getInputParameter(READTIMEOUT));
-            if (readTimeout < 0) {
-                errors.add("readTimeout cannot be less than 0!");
-            }
+        final Integer readTimeout = ((Integer) getInputParameter(READTIMEOUT));
+        if (readTimeout != null && readTimeout < 0) {
+            errors.add("readTimeout cannot be less than 0!");
         }
-        if (connectionTimeout != null) {
-            final Integer proxyPort = ((Integer) getInputParameter(PROXYPORT));
-            if (proxyPort < 0) {
-                errors.add("proxyPort cannot be less than 0!");
-            } else if (proxyPort > 65535) {
-                errors.add("proxyPort cannot be greater than 65535!");
-            }
+        final Integer proxyPort = ((Integer) getInputParameter(PROXYPORT));
+        if (proxyPort != null && proxyPort < 0) {
+            errors.add("proxyPort cannot be less than 0!");
+        } else if (proxyPort != null && proxyPort > 65535) {
+            errors.add("proxyPort cannot be greater than 65535!");
         }
 
         String authEndpoint = (String) getInputParameter(SalesforceConnector.AUTHENDPOINT);

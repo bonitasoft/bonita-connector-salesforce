@@ -17,8 +17,9 @@
  */
 package org.bonitasoft.connectors.salesforce.partner;
 
+import static java.util.Arrays.asList;
+
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -33,10 +34,10 @@ import com.sforce.ws.ConnectionException;
 public class QuerySObjectsConnector extends SalesforceConnector {
 
     // input parameters
-    private static final String QUERY = "query";
+    static final String QUERY = "query";
     // output parameters
-    private static final String QUERY_RESULT = "queryResults";
-    private static final String S_OBJECTS = "sObjects";
+    static final String QUERY_RESULT = "queryResults";
+    static final String S_OBJECTS = "sObjects";
 
     @Override
     protected List<String> validateExtraValues() {
@@ -53,6 +54,6 @@ public class QuerySObjectsConnector extends SalesforceConnector {
         final String query = String.valueOf(getInputParameter(QUERY));
         QueryResult queryResult = connection.query(query);
         setOutputParameter(QUERY_RESULT, queryResult);
-        setOutputParameter(S_OBJECTS,queryResult != null ? Arrays.asList(queryResult.getRecords()) : Collections.emptyList());
+        setOutputParameter(S_OBJECTS, queryResult != null ? asList(queryResult.getRecords()) : Collections.emptyList());
     }
 }
