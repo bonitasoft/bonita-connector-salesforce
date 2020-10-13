@@ -45,7 +45,7 @@ public class UpdateSObjectConnector extends SalesforceConnector {
 
     @Override
     protected List<String> validateExtraValues() {
-        final List<String> errors = new ArrayList<String>(1);
+        final List<String> errors = new ArrayList<>();
         final String idEmptyError = this
                 .getErrorIfNullOrEmptyParam(S_OBJECT_ID);
         if (idEmptyError != null) {

@@ -44,6 +44,10 @@ public abstract class SalesforceConnector extends AbstractConnector {
     // getting a working jar file
     // http://www.salesforce.com/us/developer/docs/api/Content/sforce_api_quickstart_steps.htm
 
+    private static final String ENDPOINT_VERSION = "24.0";
+
+    private static final String ENDPOINT_VERSION_ERROR_MESSAGE = "Please ensure the API version is 24.0";
+
     public static final String USERNAME = "username";
 
     public static final String PASSWORD = "password";
@@ -111,7 +115,7 @@ public abstract class SalesforceConnector extends AbstractConnector {
 
     @Override
     public void validateInputParameters() throws ConnectorValidationException {
-        final List<String> errors = new ArrayList<String>(1);
+        final List<String> errors = new ArrayList<>();
         // validate login / password are non-empty
         final String username = ((String) getInputParameter(USERNAME));
         if (username == null || username.isEmpty()) {
@@ -127,10 +131,8 @@ public abstract class SalesforceConnector extends AbstractConnector {
         }
         // validate timeout and port number
         final Integer connectionTimeout = ((Integer) getInputParameter(CONNECTIONTIMEOUT));
-        if (connectionTimeout != null) {
-            if (connectionTimeout < 0) {
+        if (connectionTimeout != null && connectionTimeout < 0) {
                 errors.add("connectionTimeout cannot be less than 0!");
-            }
         }
         if (connectionTimeout != null) {
             final Integer readTimeout = ((Integer) getInputParameter(READTIMEOUT));
@@ -148,17 +150,17 @@ public abstract class SalesforceConnector extends AbstractConnector {
         }
 
         String authEndpoint = (String) getInputParameter(SalesforceConnector.AUTHENDPOINT);
-        if (authEndpoint != null && !authEndpoint.endsWith("24.0")) {
-            errors.add("Please ensure the API version is 24.0");
+        if (authEndpoint != null && !authEndpoint.endsWith(ENDPOINT_VERSION)) {
+            errors.add(ENDPOINT_VERSION_ERROR_MESSAGE);
         }
         String serviceEndpoint = (String) getInputParameter(SalesforceConnector.SERVICEENDPOINT);
-        if (serviceEndpoint != null && !serviceEndpoint.endsWith("24.0")) {
-            errors.add("Please ensure the API version is 24.0");
+        if (serviceEndpoint != null && !serviceEndpoint.endsWith(ENDPOINT_VERSION)) {
+            errors.add(ENDPOINT_VERSION_ERROR_MESSAGE);
         }
 
         String restEndpoint = (String) getInputParameter(SalesforceConnector.RESTENDPOINT);
-        if (restEndpoint != null && !restEndpoint.endsWith("24.0")) {
-            errors.add("Please ensure the API version is 24.0");
+        if (restEndpoint != null && !restEndpoint.endsWith(ENDPOINT_VERSION)) {
+            errors.add(ENDPOINT_VERSION_ERROR_MESSAGE);
         }
 
         errors.addAll(validateExtraValues());
