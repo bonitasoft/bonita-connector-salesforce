@@ -17,35 +17,17 @@
  */
 package org.bonitasoft.connectors.salesforce.partner;
 
-import java.util.Collection;
-import java.util.UUID;
+import java.util.HashMap;
+import java.util.Map;
 
-/**
- * @author Charles Souillard
- * 
- */
-public class SalesforceTool {
+public class ConnectorConfiguration {
     
-    private SalesforceTool() {
-        // private constructor
+    static Map<String, Object> defaultConfiguration(){
+        Map<String, Object> configuration = new HashMap<>();
+        configuration.put(SalesforceConnector.USERNAME, "walter.bates");
+        configuration.put(SalesforceConnector.PASSWORD, "bpm");
+        configuration.put(SalesforceConnector.SECURITYTOKEN, "123");
+        return configuration;
     }
 
-    public static String buildFields(final Collection<String> fieldNames) {
-        final StringBuilder sb = new StringBuilder();
-        if (fieldNames != null && !fieldNames.isEmpty()) {
-            boolean first = true;
-            for (final String fieldName : fieldNames) {
-                if (!first) {
-                    sb.append(",");
-                }
-                first = false;
-                sb.append(fieldName);
-            }
-        }
-        return sb.toString();
-    }
-
-    public static String getAccountName() {
-        return ("UnitTest_" + UUID.randomUUID().toString());
-    }
 }

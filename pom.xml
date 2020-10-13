@@ -1,4 +1,6 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>org.bonitasoft.connectors</groupId>
@@ -45,32 +47,38 @@
 		<salesforce-deletesobjects.impl.id>${salesforce-deletesobjects.def.id}-impl</salesforce-deletesobjects.impl.id>
 		<salesforce-deletesobjects.impl.version>${project.version}</salesforce-deletesobjects.impl.version>
 		<salesforce-deletesobjects.main-class>org.bonitasoft.connectors.salesforce.partner.DeleteSObjectsConnector</salesforce-deletesobjects.main-class>
-		
+
 		<salesforce-querysobjects.def.id>salesforce-querysobjects</salesforce-querysobjects.def.id>
 		<salesforce-querysobjects.def.version>1.0.1</salesforce-querysobjects.def.version>
 		<salesforce-querysobjects.impl.id>${salesforce-querysobjects.def.id}-impl</salesforce-querysobjects.impl.id>
 		<salesforce-querysobjects.impl.version>${project.version}</salesforce-querysobjects.impl.version>
 		<salesforce-querysobjects.main-class>org.bonitasoft.connectors.salesforce.partner.QuerySObjectsConnector</salesforce-querysobjects.main-class>
-		
+
 		<salesforce-retrievesobjects.def.id>salesforce-retrievesobjects</salesforce-retrievesobjects.def.id>
 		<salesforce-retrievesobjects.def.version>1.0.1</salesforce-retrievesobjects.def.version>
 		<salesforce-retrievesobjects.impl.id>${salesforce-retrievesobjects.def.id}-impl</salesforce-retrievesobjects.impl.id>
 		<salesforce-retrievesobjects.impl.version>${project.version}</salesforce-retrievesobjects.impl.version>
 		<salesforce-retrievesobjects.main-class>org.bonitasoft.connectors.salesforce.partner.RetrieveSObjectsConnector</salesforce-retrievesobjects.main-class>
-		
+
 		<salesforce-updatesobject.def.id>salesforce-updatesobject</salesforce-updatesobject.def.id>
 		<salesforce-updatesobject.def.version>1.0.1</salesforce-updatesobject.def.version>
 		<salesforce-updatesobject.impl.id>${salesforce-updatesobject.def.id}-impl</salesforce-updatesobject.impl.id>
 		<salesforce-updatesobject.impl.version>${project.version}</salesforce-updatesobject.impl.version>
 		<salesforce-updatesobject.main-class>org.bonitasoft.connectors.salesforce.partner.UpdateSObjectConnector</salesforce-updatesobject.main-class>
-		
-		
+
+
 		<!-- Bonita -->
 		<bonita.engine.version>7.10.0</bonita.engine.version>
 		<force-partner-api.version>24.0.0</force-partner-api.version>
 
 		<!-- Tests -->
+		<junit-jupiter-engine.version>5.6.2</junit-jupiter-engine.version>
+		<junit-platform-runner.version>1.6.2</junit-platform-runner.version>
+		<jacoco-maven-plugin.version>0.8.5</jacoco-maven-plugin.version>
 		<sonar-maven-plugin.version>3.7.0.1746</sonar-maven-plugin.version>
+		<mockito-core.version>3.5.13</mockito-core.version>
+		<assertj-core.version>3.16.1</assertj-core.version>
+		<logback-classic.version>1.2.3</logback-classic.version>
 
 		<!-- Maven plugins -->
 		<maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
@@ -108,10 +116,54 @@
 			<artifactId>force-partner-api</artifactId>
 			<version>${force-partner-api.version}</version>
 		</dependency>
+
+		<!-- Test -->
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-engine</artifactId>
+			<version>${junit-jupiter-engine.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-params</artifactId>
+			<version>${junit-jupiter-engine.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.junit.platform</groupId>
+			<artifactId>junit-platform-runner</artifactId>
+			<version>${junit-platform-runner.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-junit-jupiter</artifactId>
+			<version>${mockito-core.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.assertj</groupId>
+			<artifactId>assertj-core</artifactId>
+			<version>${assertj-core.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<version>${mockito-core.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>${logback-classic.version}</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 
-		<build>
+	<build>
 		<defaultGoal>verify</defaultGoal>
 		<resources>
 			<resource>
@@ -172,6 +224,56 @@
 					</dependencies>
 				</plugin>
 				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-surefire-plugin</artifactId>
+					<version>${maven-surefire-plugin.version}</version>
+					<configuration>
+						<enableAssertions>true</enableAssertions>
+						<forkCount>1</forkCount>
+						<reuseForks>true</reuseForks>
+						<includes>
+							<include>**/*IT.java</include>
+							<include>**/*Test.java</include>
+						</includes>
+					</configuration>
+					<dependencies>
+						<dependency>
+							<groupId>org.junit.platform</groupId>
+							<artifactId>junit-platform-runner</artifactId>
+							<version>${junit-platform-runner.version}</version>
+						</dependency>
+					</dependencies>
+				</plugin>
+				<plugin>
+					<groupId>org.jacoco</groupId>
+					<artifactId>jacoco-maven-plugin</artifactId>
+					<version>${jacoco-maven-plugin.version}</version>
+					<configuration>
+						<append>true</append>
+					</configuration>
+					<executions>
+						<execution>
+							<id>prepare-agent</id>
+							<goals>
+								<goal>prepare-agent</goal>
+							</goals>
+						</execution>
+						<execution>
+							<id>prepare-agent-integration</id>
+							<goals>
+								<goal>prepare-agent-integration</goal>
+							</goals>
+						</execution>
+						<execution>
+							<id>jacoco-site</id>
+							<phase>verify</phase>
+							<goals>
+								<goal>report</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+				<plugin>
 					<groupId>org.sonarsource.scanner.maven</groupId>
 					<artifactId>sonar-maven-plugin</artifactId>
 					<version>${sonar-maven-plugin.version}</version>
@@ -222,6 +324,10 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-assembly-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
