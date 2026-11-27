@@ -3,7 +3,8 @@
 ## Project Overview
 
 **Artifact:** `org.bonitasoft.connectors:bonita-connector-salesforce`
-**Current version:** 1.1.4-SNAPSHOT
+**Current version:** 2.0.0-SNAPSHOT
+**Bonita runtime:** 12.0+ (Jakarta EE, Java 17); Bonita 7.13 - 11.x use the 1.x versions
 **License:** GPL v2.0
 **Description:** Salesforce Connectors for Bonita — a set of connectors that allow Bonita BPM processes to interact with Salesforce via the Salesforce Partner API (SOAP).
 
@@ -20,7 +21,7 @@ All connectors extend the abstract `SalesforceConnector` base class which handle
 
 ## Build Commands
 
-The project uses Maven Wrapper (`mvnw`). Java 11 is the compile target; the CI pipeline uses Java 17.
+The project uses Maven Wrapper (`mvnw`). Java 17 is the compile target and the CI JDK.
 
 ```bash
 # Full build (compile + test + package + JaCoCo coverage)
@@ -82,16 +83,18 @@ src/
 - **`SalesforceConnector`** extends Bonita's `AbstractConnector`. It implements the connect/disconnect/executeBusinessLogic lifecycle and provides shared validation (username, password, securityToken, endpoint API version, timeout/port range checks). Each subclass only needs to implement `executeFunction(PartnerConnection)` and `validateExtraValues()`.
 - **Auto-reconnect:** If `executeFunction` throws a `ConnectionException`, the base class logs out, reconnects, and retries once before throwing `ConnectorException`.
 - **Salesforce API version:** The Partner API endpoint must end with `/24.0`. The connector enforces this at validation time.
-- **Assembly packaging:** Each connector is packaged as a separate ZIP via `maven-assembly-plugin`, using descriptors in `src/assembly/`. The ZIP contains the JAR plus all runtime dependencies (excluding Bonita `bonita-common`, which is `provided`).
+- **Assembly packaging:** Each connector is packaged as a separate ZIP via `maven-assembly-plugin`, using descriptors in `src/assembly/`. The ZIP contains the JAR plus all runtime dependencies (excluding `bonita-common` and `commons-logging`, which are `provided` by the Bonita runtime).
 - **Connector descriptors:** `.def` (definition) and `.impl` (implementation) files in `src/main/resources-filtered/` are Maven-filtered to inject version and class name properties from `pom.xml`.
 
 ### Key dependencies
 
 | Dependency | Version | Scope |
 |---|---|---|
-| `org.bonitasoft.engine:bonita-common` | 7.13.0 | provided |
+| `org.bonitasoft.runtime:bonita-runtime-bom` | 12.0-SNAPSHOT | import (dependencyManagement) |
+| `org.bonitasoft.engine:bonita-common` | from the BOM | provided |
 | `com.force.api:force-wsc` | 59.0.0 | compile |
 | `com.force.api:force-partner-api` | 59.0.0 | compile |
+| `commons-logging:commons-logging` | 1.3.5 | provided (logging facade of the runtime, excluded from force-wsc) |
 | JUnit Jupiter | 5.10.1 | test |
 | Mockito | 5.8.0 | test |
 | AssertJ | 3.24.2 | test |
