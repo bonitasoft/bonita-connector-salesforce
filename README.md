@@ -6,6 +6,16 @@
 [![Maven Central](https://img.shields.io/maven-central/v/org.bonitasoft.connectors/bonita-connector-salesforce.svg?label=Maven%20Central&color=orange)](https://search.maven.org/search?q=g:%22org.bonitasoft.connectors%22%20AND%20a:%22bonita-connector-salesforce%22)
 [![License: GPL v2](https://img.shields.io/badge/License-GPL%20v2-yellow.svg)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html)
 
+## Compatibility
+
+| Connector              | Bonita          | Java         |
+|------------------------|-----------------|--------------|
+| 2.x (`master`)         | 12.0 and later  | 17 and later |
+| 1.x (up to 1.1.3)      | 7.13 to 11.x    | 11 and later |
+
+The connector definitions (`salesforce-*` 1.0.1) and their inputs/outputs are unchanged: on Bonita 12, processes using a
+1.x implementation must switch to a 2.x implementation.
+
 ## Build
 
 __Clone__ or __fork__ this repository, then at the root of the project run:
